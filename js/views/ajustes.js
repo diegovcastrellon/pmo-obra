@@ -1,6 +1,7 @@
 import { app, toast, confirmDialog } from '../app.js';
 import { esc, today, download, pickFile } from '../utils.js';
 import { DEFAULT_STATE } from '../db.js';
+import { installApp, isStandalone } from '../install.js';
 
 const DAYS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 
@@ -36,11 +37,12 @@ export function render(el) {
           <button class="btn primary" data-backup>Exportar respaldo</button>
           <button class="btn" data-restore>Importar respaldo</button>
         </div>
-        <hr style="border:0;border-top:1px solid var(--border);margin:16px 0">
-        <h3>Instalar en el celular o PC</h3>
-        <p class="small muted"><b>iPhone:</b> en Safari toca Compartir › “Agregar a inicio”.
-          <b>Android:</b> en Chrome, menú ⋮ › “Instalar app”. <b>PC:</b> en Chrome o Edge, ícono de instalar en la barra de direcciones.</p>
-        <hr style="border:0;border-top:1px solid var(--border);margin:16px 0">
+        <hr style="border:0;border-top:1px solid var(--separator);margin:16px 0">
+        <h3>App en tu pantalla de inicio</h3>
+        ${isStandalone() ? '<p class="small"><span class="chip ok">Instalada</span> Estás usando la app instalada.</p>'
+          : `<p class="small muted">Instálala para abrirla desde un ícono, a pantalla completa y sin internet.</p>
+             <button class="btn primary" data-install>Instalar app</button>`}
+        <hr style="border:0;border-top:1px solid var(--separator);margin:16px 0">
         <button class="btn danger" data-demo>Cargar datos de ejemplo</button>
         <button class="btn danger" data-wipe>Borrar todo</button>
       </div>
@@ -55,8 +57,9 @@ export function render(el) {
       hoursPerDay: n('hoursPerDay') || 8, workDays: DAYS.map((_, i) => i).filter(i => f.get('d' + i)) });
     app.commit(); toast('Jornada guardada');
   };
+  el.querySelector('[data-install]')?.addEventListener('click', installApp);
   el.querySelector('[data-backup]').onclick = () => {
-    download(`Respaldo PMO Obra ${today()}.json`, JSON.stringify(app.state, null, 1), 'application/json');
+    download(`Respaldo PMO Desk ${today()}.json`, JSON.stringify(app.state, null, 1), 'application/json');
   };
   el.querySelector('[data-restore]').onclick = async () => {
     const file = await pickFile('.json,application/json');

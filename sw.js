@@ -1,11 +1,11 @@
 // Service worker: permite usar la app sin conexión.
-const CACHE = 'pmo-obra-v3';
+const CACHE = 'pmo-desk-v8';
 const ASSETS = [
   './', './index.html', './manifest.webmanifest', './css/styles.css',
-  './js/app.js', './js/db.js', './js/utils.js', './js/scheduler.js',
+  './js/app.js', './js/install.js', './js/db.js', './js/utils.js', './js/scheduler.js',
   './js/views/agenda.js', './js/views/prioridades.js', './js/views/proyectos.js',
   './js/views/calendario.js', './js/views/cronograma.js', './js/views/finanzas.js',
-  './js/views/ajustes.js', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png'
+  './js/views/ajustes.js', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'
 ];
 
 self.addEventListener('install', e => {

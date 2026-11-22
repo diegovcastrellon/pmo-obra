@@ -27,12 +27,12 @@ export const app = {
 
 // ---------- Modal y toast ----------
 const modalEl = document.getElementById('modal');
-export function openModal(title, bodyHTML, { onSubmit, submitLabel = 'Guardar', onOpen, extraFooter = '' } = {}) {
+export function openModal(title, bodyHTML, { onSubmit, submitLabel = 'Guardar', onOpen, extraFooter = '', cancelLabel = 'Cancelar' } = {}) {
   modalEl.innerHTML = `
     <form class="sheet" novalidate>
       <header><h2>${esc(title)}</h2><button type="button" class="btn icon" data-close aria-label="Cerrar">${icon('x')}</button></header>
       <div class="body">${bodyHTML}</div>
-      <footer>${extraFooter}<button type="button" class="btn" data-close>Cancelar</button>
+      <footer>${extraFooter}<button type="button" class="btn ${onSubmit ? '' : 'primary'}" data-close>${esc(cancelLabel)}</button>
         ${onSubmit ? `<button type="submit" class="btn primary">${esc(submitLabel)}</button>` : ''}</footer>
     </form>`;
   modalEl.hidden = false;
@@ -196,6 +196,78 @@ window.addEventListener('hashchange', () => {
   app._keepScroll = true;
 });
 
+// Pantalla de bienvenida (≈3 s, un toque la adelanta al final):
+//   1. aparece el punto amarillo al centro
+//   2. el punto se recorre a la derecha y devela «desk»
+//   3. «pmo» sale de detrás de «desk» subiendo a su lugar
+//   4. el punto se expande a toda la pantalla y la intro se desvanece
+function runSplash() {
+  const el = document.getElementById('splash');
+  if (!el) return;
+  try { sessionStorage.setItem('pmo-splash', '1'); } catch { /* sin almacenamiento */ }
+  const $ = s => el.querySelector(s);
+  const dot = $('.dot'), desk = $('.desk'), pmo = $('.pmo'), tag = $('.splash-tag');
+  const remove = () => el.remove();
+
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !dot.animate) {
+    el.classList.add('static');
+    setTimeout(() => { el.style.transition = 'opacity .3s'; el.style.opacity = '0'; setTimeout(remove, 350); }, 1000);
+    el.addEventListener('click', remove, { once: true });
+    return;
+  }
+
+  const box = el.getBoundingClientRect();
+  const d = dot.getBoundingClientRect();
+  const k = desk.getBoundingClientRect();
+  const cx = box.width / 2, cy = box.height / 2;
+  // Al inicio el logotipo se corre para que el borde izquierdo de «desk» quede al centro de la pantalla,
+  // justo donde nace el punto. Luego el punto avanza a la derecha y «desk» se devela detrás de él
+  // mientras el logotipo vuelve a quedar centrado.
+  const shift = cx - k.left;
+  const dx = k.left - (d.left + d.width / 2), dy = cy - (d.top + d.height / 2);
+  const t = (delay, duration, easing) => ({ delay, duration, easing, fill: 'both' });
+  const ease = 'cubic-bezier(.65,0,.35,1)';
+  const logo = $('.splash-logo');
+
+  const anims = [
+    logo.animate([{ transform: `translateX(${shift}px)` }, { transform: 'translateX(0px)' }], t(675, 725, ease)),
+    dot.animate([
+      { transform: `translate(${dx}px, ${dy}px) scale(0)`, offset: 0, easing: 'cubic-bezier(.3,1.6,.5,1)' },
+      { transform: `translate(${dx}px, ${dy}px) scale(1)`, offset: 0.32 },
+      { transform: `translate(${dx}px, ${dy}px) scale(1)`, offset: 0.42, easing: ease },
+      { transform: 'translate(0px, 0px) scale(1)', offset: 1 }
+    ], t(150, 1250)),
+    desk.animate([
+      { clipPath: `inset(-20% ${k.width}px -20% 0px)` },
+      { clipPath: 'inset(-20% 0px -20% 0px)' }
+    ], t(675, 725, ease)),
+    pmo.animate([{ transform: 'translateY(115%)' }, { transform: 'translateY(0%)' }], t(1400, 650, 'cubic-bezier(.2,.9,.3,1)')),
+    tag.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], t(1750, 450, 'ease'))
+  ];
+
+  let leaving = false;
+  function leave(delay) {
+    if (leaving) return;
+    leaving = true;
+    if (delay === 0) anims.forEach(a => a.finish());
+    // Capa amarilla a pantalla completa recortada en círculo desde el punto: crece nítida, sin pixelarse.
+    const r = dot.getBoundingClientRect();
+    const x = r.left + r.width / 2 - box.left, y = r.top + r.height / 2 - box.top;
+    const R = Math.hypot(Math.max(x, box.width - x), Math.max(y, box.height - y)) + 2;
+    const fill = document.createElement('div');
+    fill.className = 'splash-fill';
+    el.appendChild(fill);
+    fill.animate([
+      { clipPath: `circle(${r.width / 2}px at ${x}px ${y}px)` },
+      { clipPath: `circle(${R}px at ${x}px ${y}px)` }
+    ], t(delay, 650, 'cubic-bezier(.7,0,.84,0)'));
+    el.animate([{ opacity: 1 }, { opacity: 0 }], t(delay + 620, 420, 'ease')).finished.then(remove, remove);
+  }
+  anims[0].finished.then(() => setTimeout(() => leave(0), 1000)).catch(() => {});
+  el.addEventListener('click', () => leave(0), { once: true });
+}
+runSplash();
+
 async function init() {
   app.state = await loadState();
   app.route = parseHash();
@@ -207,4 +279,6 @@ async function init() {
   }
 }
 
+import { initInstall } from './install.js';
 init();
+initInstall();

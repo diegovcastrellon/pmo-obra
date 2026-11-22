@@ -3,19 +3,29 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>PMO Obra</title>
+  <title>PMO Desk</title>
+  <meta name="apple-mobile-web-app-title" content="PMO Desk">
+  <meta name="application-name" content="PMO Desk">
   <meta name="theme-color" content="#f5f5f7">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+  <div id="splash" class="splash" aria-hidden="true">
+    <div class="splash-logo">
+      <div class="pmo-mask"><span class="pmo">pmo</span></div>
+      <div class="desk-row"><span class="desk">desk</span><i class="dot"></i></div>
+    </div>
+    <div class="splash-tag">Gestión de proyectos</div>
+  </div>
+  <script>try { if (sessionStorage.getItem('pmo-splash')) document.getElementById('splash').remove(); } catch (e) {}</script>
   <div class="layout">
     <nav class="nav" id="nav">
-      <div class="brand"><img src="icons/icon.svg" alt="">PMO <span>Obra</span></div>
+      <div class="brand"><img src="icons/icon.svg" alt="">PMO <span>Desk</span></div>
       <a href="#agenda" data-tab="agenda"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="lg">Agenda</span><span class="sm">Agenda</span></a>
       <a href="#prioridades" data-tab="prioridades"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h12l-2.5 4.5L17 13H5"/></svg><span class="lg">Prioridades</span><span class="sm">Top</span></a>
       <a href="#proyectos" data-tab="proyectos"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M9 21v-4h6v4M8.5 7.5h1M14.5 7.5h1M8.5 11.5h1M14.5 11.5h1"/></svg><span class="lg">Proyectos</span><span class="sm">Obras</span></a>

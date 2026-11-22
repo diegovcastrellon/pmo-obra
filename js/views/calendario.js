@@ -90,7 +90,7 @@ export function exportICS(events, name) {
   const icsEsc = s => String(s || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
   const dt = (date, time) => date.replace(/-/g, '') + 'T' + (time || '09:00').replace(':', '') + '00';
   const stamp = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z';
-  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//PMO Obra//ES', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'];
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//PMO Desk//ES', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'];
   for (const e of events) {
     lines.push('BEGIN:VEVENT', `UID:${e.id}@pmo-obra`, `DTSTAMP:${stamp}`,
       `DTSTART:${dt(e.date, e.start)}`, `DTEND:${dt(e.date, e.end || e.start)}`,

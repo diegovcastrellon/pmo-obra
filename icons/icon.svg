@@ -1,11 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d0143a"/><stop offset="1" stop-color="#a00a28"/></linearGradient>
-  </defs>
-  <rect width="512" height="512" rx="114" fill="url(#g)"/>
-  <g stroke-linecap="round" stroke-width="46">
-    <path d="M132 170h150" stroke="#c9c9c9"/>
-    <path d="M210 256h170" stroke="#ffcd00"/>
-    <path d="M170 342h110" stroke="#ffffff"/>
+  <rect width="512" height="512" rx="114" fill="#BA0C2F"/>
+  <g font-family="-apple-system, 'SF Pro Display', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif" font-size="132" font-weight="600" letter-spacing="-5">
+    <text x="104" y="246" fill="#ffffff">pmo</text>
+    <text x="104" y="366" fill="#ffffff" fill-opacity=".55">desk</text>
   </g>
+  <circle cx="386" cy="353" r="13" fill="#FFCD00"/>
 </svg>

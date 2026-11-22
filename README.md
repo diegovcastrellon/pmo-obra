@@ -1,4 +1,4 @@
-# PMO Obra
+# PMO Desk
 
 App personal de gestión de proyectos de obra (PWA) para celular y PC. Funciona sin internet y guarda los datos en el dispositivo.
 
